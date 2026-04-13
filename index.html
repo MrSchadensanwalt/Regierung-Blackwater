@@ -2,8 +2,8 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Blackwater — Stadtregister</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Blackwater — Bürgermeisteramt</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -51,6 +51,7 @@ body {
   font-size: 17px;
   line-height: 1.65;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 /* Dezentes Rauschen für den Retro-Look */
@@ -101,7 +102,7 @@ header::after {
 
 header h1 {
   font-family: var(--font-display);
-  font-size: clamp(28px, 6vw, 52px);
+  font-size: clamp(24px, 6vw, 52px);
   font-weight: 700;
   color: var(--paper);
   letter-spacing: 0.08em;
@@ -209,7 +210,7 @@ nav ul li a.active::after {
 
 .section-title {
   font-family: var(--font-display);
-  font-size: clamp(22px, 4vw, 30px);
+  font-size: clamp(20px, 4vw, 30px);
   font-weight: 700;
   color: var(--brown-deep);
   text-transform: uppercase;
@@ -256,6 +257,7 @@ nav ul li a.active::after {
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   padding: 9px 18px;
   font-family: var(--font-display);
@@ -282,15 +284,8 @@ nav ul li a.active::after {
   transform: translateY(-1px);
 }
 
-.btn-secondary {
-  background-color: transparent;
-  color: var(--sepia);
-  border: 1px solid var(--border);
-}
-.btn-secondary:hover {
-  background-color: var(--paper-dark);
-  color: var(--brown-deep);
-}
+.btn-secondary { background-color: transparent; color: var(--sepia); border: 1px solid var(--border); }
+.btn-secondary:hover { background-color: var(--paper-dark); color: var(--brown-deep); }
 
 .btn-success { background-color: #4a6741; color: var(--paper-light); border: 1px solid #3a5234; font-size: 12px; padding: 6px 13px; }
 .btn-success:hover { background-color: #3a5234; }
@@ -314,48 +309,46 @@ nav ul li a.active::after {
 }
 
 /* ============================================================
-   CITIZEN GRID
+   DATA GRID (Bürger & Gewerbe)
    ============================================================ */
-.citizen-grid {
+.data-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 18px;
 }
 
-.citizen-card {
+.data-card {
   padding: 16px 15px 14px;
   position: relative;
   cursor: default;
   transition: transform var(--transition), box-shadow var(--transition);
 }
 
-.citizen-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 18px var(--shadow-deep);
-}
+.data-card:hover { transform: translateY(-3px); box-shadow: 0 6px 18px var(--shadow-deep); }
 
-.citizen-card::before {
+.data-card::before {
   content: ''; position: absolute; top: -1px; left: 10%; right: 10%; height: 2px;
   background: linear-gradient(90deg, transparent, var(--sepia-light), transparent); opacity: 0.6;
 }
 
-.citizen-card .card-name {
+.data-card .card-title {
   font-family: var(--font-display); font-size: 16px; font-weight: 700; color: var(--brown-deep);
   border-bottom: 1px dashed var(--border-soft); padding-bottom: 6px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em;
+  word-break: break-word;
 }
 
-.citizen-card .card-field { font-size: 14px; color: var(--ink-soft); display: flex; gap: 5px; margin-bottom: 3px; }
-.citizen-card .card-label { font-style: italic; color: var(--sepia); min-width: 55px; font-size: 13px; }
+.data-card .card-field { font-size: 14px; color: var(--ink-soft); display: flex; gap: 5px; margin-bottom: 3px; }
+.data-card .card-label { font-style: italic; color: var(--sepia); min-width: 65px; font-size: 13px; }
 
-.citizen-card .card-delete, .citizen-card .card-edit {
-  position: absolute; background: none; border: none; color: var(--sepia); opacity: 0; cursor: pointer;
-  font-size: 14px; line-height: 1; padding: 2px 4px; border-radius: 2px; transition: opacity var(--transition), color var(--transition);
+.data-card .card-delete, .data-card .card-edit {
+  position: absolute; background: none; border: none; color: var(--sepia); opacity: 1; cursor: pointer;
+  font-size: 14px; line-height: 1; padding: 6px; border-radius: 2px; transition: color var(--transition);
 }
-.citizen-card .card-delete { top: 8px; right: 8px; font-size: 15px; }
-.citizen-card .card-edit   { top: 8px; right: 30px; font-size: 13px; }
-.citizen-card:hover .card-delete, .citizen-card:hover .card-edit { opacity: 0.6; }
-.citizen-card .card-delete:hover { opacity: 1 !important; color: #7a2e1a; }
-.citizen-card .card-edit:hover   { opacity: 1 !important; color: var(--brown-mid); }
+.data-card .card-delete { top: 5px; right: 5px; font-size: 18px; }
+.data-card .card-edit   { top: 5px; right: 35px; font-size: 15px; }
+
+.data-card .card-delete:hover { color: #7a2e1a; }
+.data-card .card-edit:hover   { color: var(--brown-mid); }
 
 .empty-state { text-align: center; padding: 48px 20px; color: var(--sepia); font-style: italic; font-size: 18px; }
 .empty-state::before { content: '✦'; display: block; font-size: 28px; margin-bottom: 10px; opacity: 0.45; }
@@ -365,7 +358,6 @@ nav ul li a.active::after {
    ============================================================ */
 .appt-form { padding: 22px 24px; margin-bottom: 28px; }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 18px; }
-@media (max-width: 540px) { .form-grid { grid-template-columns: 1fr; } }
 
 .form-group { display: flex; flex-direction: column; gap: 5px; }
 .form-group.full { grid-column: 1 / -1; }
@@ -373,7 +365,7 @@ nav ul li a.active::after {
 
 .form-group input, .form-group select, .form-group textarea {
   background-color: var(--paper-light); border: 1px solid var(--border-soft); border-radius: var(--radius);
-  padding: 8px 11px; font-family: var(--font-body); font-size: 15px; color: var(--ink); outline: none; transition: border-color var(--transition), box-shadow var(--transition);
+  padding: 10px 11px; font-family: var(--font-body); font-size: 16px; color: var(--ink); outline: none; transition: border-color var(--transition), box-shadow var(--transition);
 }
 .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--sepia); box-shadow: 0 0 0 3px rgba(160,114,58,0.15); }
 .form-group textarea { resize: vertical; min-height: 70px; }
@@ -381,20 +373,20 @@ nav ul li a.active::after {
 .form-actions { margin-top: 16px; display: flex; justify-content: flex-end; }
 
 .appt-list { display: flex; flex-direction: column; gap: 10px; }
-.appt-item { padding: 14px 18px; display: flex; align-items: flex-start; gap: 16px; border-left: 3px solid var(--sepia); transition: border-color var(--transition), box-shadow var(--transition); }
+.appt-item { padding: 14px 18px; display: flex; align-items: center; gap: 16px; border-left: 3px solid var(--sepia); transition: border-color var(--transition), box-shadow var(--transition); }
 .appt-item:hover { border-left-color: var(--brown-mid); box-shadow: 0 4px 14px var(--shadow); }
 
 .appt-info { flex: 1; min-width: 0; }
 .appt-location { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: var(--brown-deep); letter-spacing: 0.04em; }
 .appt-datetime { font-size: 13px; color: var(--sepia); font-style: italic; margin: 2px 0 5px; }
 .appt-note { font-size: 15px; color: var(--ink-soft); }
-.appt-actions { display: flex; gap: 7px; flex-shrink: 0; flex-wrap: wrap; align-items: flex-start; padding-top: 2px; }
+.appt-actions { display: flex; gap: 7px; flex-shrink: 0; flex-wrap: wrap; }
 
 /* Archive */
 .archive-toggle { margin-top: 28px; text-align: center; }
 .archive-section { margin-top: 16px; padding: 18px 20px; background-color: var(--paper-dark); border: 1px dashed var(--border-soft); border-radius: var(--radius); }
 .archive-section h3 { font-family: var(--font-display); font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sepia); margin-bottom: 12px; }
-.archive-item { padding: 8px 0; border-bottom: 1px dotted var(--border-soft); font-size: 14px; color: var(--ink-soft); display: flex; gap: 12px; align-items: baseline; }
+.archive-item { padding: 8px 0; border-bottom: 1px dotted var(--border-soft); font-size: 14px; color: var(--ink-soft); display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
 .archive-item:last-child { border-bottom: none; }
 .archive-item strong { color: var(--brown-mid); font-family: var(--font-display); font-size: 13px; text-transform: uppercase; }
 
@@ -403,7 +395,7 @@ nav ul li a.active::after {
    ============================================================ */
 .modal-overlay {
   position: fixed; inset: 0; background: var(--overlay); z-index: 200; display: flex; align-items: center; justify-content: center;
-  padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+  padding: 15px; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
 }
 .modal-overlay.open { opacity: 1; pointer-events: all; }
 .modal {
@@ -414,7 +406,7 @@ nav ul li a.active::after {
 .modal-overlay.open .modal { transform: scale(1) translateY(0); }
 .modal-header { margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border-soft); display: flex; justify-content: space-between; align-items: center; }
 .modal-title { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--brown-deep); text-transform: uppercase; letter-spacing: 0.07em; }
-.modal-close { background: none; border: none; font-size: 22px; color: var(--sepia); cursor: pointer; padding: 0 4px; line-height: 1; transition: color var(--transition); }
+.modal-close { background: none; border: none; font-size: 28px; color: var(--sepia); cursor: pointer; padding: 0 8px; line-height: 1; transition: color var(--transition); }
 .modal-close:hover { color: var(--brown-deep); }
 .modal-footer { margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px; }
 
@@ -426,6 +418,36 @@ nav ul li a.active::after {
 ::-webkit-scrollbar-thumb { background: var(--sepia); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--sepia-light); }
 ::selection { background: var(--sepia-light); color: var(--brown-deep); }
+
+/* ============================================================
+   RESPONSIVE DESIGN (Tablets & Smartphones)
+   ============================================================ */
+@media (max-width: 768px) {
+  .section-header { flex-direction: column; align-items: flex-start; }
+  .header-actions { width: 100%; }
+  .search-input { flex-grow: 1; width: auto; }
+  
+  .form-grid { grid-template-columns: 1fr; } /* Formulare immer einspaltig */
+  .appt-item { flex-direction: column; align-items: flex-start; }
+  .appt-actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .appt-actions .btn-delete-appt { grid-column: 1 / -1; }
+}
+
+@media (max-width: 480px) {
+  nav ul { flex-direction: column; width: 100%; }
+  nav ul li { width: 100%; border-bottom: 1px solid rgba(160, 114, 58, 0.25); }
+  nav ul li a { border-right: none; padding: 16px; font-size: 15px; }
+  
+  .page-wrapper { padding: 15px 10px 40px; }
+  .data-grid { grid-template-columns: 1fr; } /* Karten untereinander auf Handys */
+  
+  .header-actions { flex-direction: column; align-items: stretch; }
+  .search-input, .btn { width: 100%; text-align: center; }
+  .form-actions .btn { width: 100%; }
+  .modal { padding: 20px 15px; }
+  .modal-footer { flex-direction: column; }
+  .modal-footer .btn { width: 100%; margin-left: 0; }
+}
 </style>
 </head>
 <body>
@@ -440,8 +462,8 @@ nav ul li a.active::after {
 <nav aria-label="Hauptnavigation">
   <ul>
     <li><a href="#" class="nav-link active" data-view="citizens">Bürgerverzeichnis</a></li>
-    <li><a href="#" class="nav-link" data-view="doc-harrison">Terminplan Dr. Harrison</a></li>
-    <li><a href="#" class="nav-link" data-view="doc-schulz">Terminplan Dr. Schulz</a></li>
+    <li><a href="#" class="nav-link" data-view="appointments">Terminkalender</a></li>
+    <li><a href="#" class="nav-link" data-view="businesses">Gewerbeverzeichnis</a></li>
   </ul>
 </nav>
 
@@ -458,19 +480,19 @@ nav ul li a.active::after {
         <button class="btn btn-primary" id="btn-add-citizen"><span>&#43;</span> Neuer Bürger</button>
       </div>
     </div>
-    <div class="citizen-grid" id="citizen-grid"></div>
+    <div class="data-grid" id="citizen-grid"></div>
     <div class="empty-state" id="citizen-empty" style="display:none">Das Verzeichnis ist noch leer.</div>
   </section>
 
-  <section id="view-doc-harrison" class="view" aria-label="Terminplan Dr. Harrison">
+  <section id="view-appointments" class="view" aria-label="Terminkalender">
     <div class="section-header">
-      <h2 class="section-title">Terminplan <small>Doktor Harrison</small></h2>
+      <h2 class="section-title">Terminkalender <small>Stadtverwaltung</small></h2>
     </div>
     <div class="paper appt-form">
       <div class="form-grid">
         <div class="form-group">
-          <label for="h-location">Ort</label>
-          <select id="h-location">
+          <label for="appt-location">Ort</label>
+          <select id="appt-location">
             <option value="">— Ort wählen —</option>
             <option>Strawberry</option><option>Armadillo</option><option>Tumbleweed</option>
             <option>Valentine</option><option>Annesburg</option><option>Van Horn</option>
@@ -478,73 +500,47 @@ nav ul li a.active::after {
           </select>
         </div>
         <div class="form-group">
-          <label for="h-datetime">Datum &amp; Uhrzeit</label>
-          <input type="datetime-local" id="h-datetime" />
+          <label for="appt-datetime">Datum &amp; Uhrzeit</label>
+          <input type="datetime-local" id="appt-datetime" />
         </div>
         <div class="form-group full">
-          <label for="h-note">Notiz</label>
-          <textarea id="h-note" placeholder="Kurze Beschreibung des Termins …"></textarea>
+          <label for="appt-note">Notiz / Betreff</label>
+          <textarea id="appt-note" placeholder="Kurze Beschreibung des Termins …"></textarea>
         </div>
       </div>
       <div class="form-actions">
-        <button class="btn btn-primary" id="btn-add-harrison"><span>&#43;</span> Termin hinzufügen</button>
+        <button class="btn btn-primary" id="btn-add-appt"><span>&#43;</span> Termin hinzufügen</button>
       </div>
     </div>
     <div class="ornament-divider">✦ ✦ ✦</div>
-    <div class="appt-list" id="list-harrison"></div>
-    <div class="empty-state" id="empty-harrison" style="display:none">Keine Termine vorhanden.</div>
+    <div class="appt-list" id="list-appointments"></div>
+    <div class="empty-state" id="empty-appointments" style="display:none">Keine Termine vorhanden.</div>
     
     <div class="archive-toggle">
-      <button class="btn btn-secondary" id="btn-archive-harrison">Archiv einsehen</button>
+      <button class="btn btn-secondary" id="btn-archive-appts">Archiv einsehen</button>
     </div>
-    <div class="archive-section" id="archive-section-harrison" style="display:none">
+    <div class="archive-section" id="archive-section-appts" style="display:none">
       <h3>&#x2713; Erledigte Termine</h3>
-      <div id="archive-list-harrison"></div>
-      <div id="archive-empty-harrison" style="display:none; font-style:italic; font-size:14px; color:var(--sepia); padding:8px 0">Archiv ist leer.</div>
+      <div id="archive-list-appts"></div>
+      <div id="archive-empty-appts" style="display:none; font-style:italic; font-size:14px; color:var(--sepia); padding:8px 0">Archiv ist leer.</div>
     </div>
   </section>
 
-  <section id="view-doc-schulz" class="view" aria-label="Terminplan Dr. Schulz">
+  <section id="view-businesses" class="view" aria-label="Gewerbeverzeichnis">
     <div class="section-header">
-      <h2 class="section-title">Terminplan <small>Doktor Schulz</small></h2>
-    </div>
-    <div class="paper appt-form">
-      <div class="form-grid">
-        <div class="form-group">
-          <label for="s-location">Ort</label>
-          <select id="s-location">
-            <option value="">— Ort wählen —</option>
-            <option>Strawberry</option><option>Armadillo</option><option>Tumbleweed</option>
-            <option>Valentine</option><option>Annesburg</option><option>Van Horn</option>
-            <option>Rhodes</option><option>Saint Denis</option><option>Blackwater</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="s-datetime">Datum &amp; Uhrzeit</label>
-          <input type="datetime-local" id="s-datetime" />
-        </div>
-        <div class="form-group full">
-          <label for="s-note">Notiz</label>
-          <textarea id="s-note" placeholder="Kurze Beschreibung des Termins …"></textarea>
-        </div>
-      </div>
-      <div class="form-actions">
-        <button class="btn btn-primary" id="btn-add-schulz"><span>&#43;</span> Termin hinzufügen</button>
+      <h2 class="section-title">
+        Gewerbeverzeichnis
+        <small>Lokale Geschäfte & Firmen</small>
+      </h2>
+      <div class="header-actions">
+        <input type="text" id="search-business" class="search-input" placeholder="Nach Gewerbe suchen..." aria-label="Gewerbe suchen">
+        <button class="btn btn-primary" id="btn-add-business"><span>&#43;</span> Neues Gewerbe</button>
       </div>
     </div>
-    <div class="ornament-divider">✦ ✦ ✦</div>
-    <div class="appt-list" id="list-schulz"></div>
-    <div class="empty-state" id="empty-schulz" style="display:none">Keine Termine vorhanden.</div>
-
-    <div class="archive-toggle">
-      <button class="btn btn-secondary" id="btn-archive-schulz">Archiv einsehen</button>
-    </div>
-    <div class="archive-section" id="archive-section-schulz" style="display:none">
-      <h3>&#x2713; Erledigte Termine</h3>
-      <div id="archive-list-schulz"></div>
-      <div id="archive-empty-schulz" style="display:none; font-style:italic; font-size:14px; color:var(--sepia); padding:8px 0">Archiv ist leer.</div>
-    </div>
+    <div class="data-grid" id="business-grid"></div>
+    <div class="empty-state" id="business-empty" style="display:none">Das Verzeichnis ist noch leer.</div>
   </section>
+
 </div>
 
 <div class="modal-overlay" id="modal-citizen" role="dialog" aria-modal="true">
@@ -583,6 +579,38 @@ nav ul li a.active::after {
   </div>
 </div>
 
+<div class="modal-overlay" id="modal-business" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-business-title">Neues Gewerbe</span>
+      <button class="modal-close" data-close="modal-business">&times;</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group full">
+        <label for="b-name">Gewerbename</label>
+        <input type="text" id="b-name" placeholder="z.B. Smith & Son Schmiede" />
+      </div>
+      <div class="form-group full">
+        <label for="b-owner">Gewerbeinhaber</label>
+        <input type="text" id="b-owner" placeholder="Name des Besitzers" />
+      </div>
+      <div class="form-group full">
+        <label for="b-address">Anschrift</label>
+        <input type="text" id="b-address" placeholder="Straße / Ort" />
+      </div>
+      <div class="form-group full">
+        <label for="b-type">Gewerbeart</label>
+        <input type="text" id="b-type" placeholder="z.B. Handwerk, Saloon, Handel" />
+      </div>
+    </div>
+    <input type="hidden" id="b-edit-id" value="" />
+    <div class="modal-footer">
+      <button class="btn btn-secondary" data-close="modal-business">Abbrechen</button>
+      <button class="btn btn-primary" id="btn-save-business">Eintragen</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modal-reschedule" role="dialog" aria-modal="true">
   <div class="modal">
     <div class="modal-header">
@@ -604,7 +632,6 @@ nav ul li a.active::after {
         <input type="datetime-local" id="r-datetime" />
       </div>
     </div>
-    <input type="hidden" id="r-doctor" />
     <input type="hidden" id="r-id" />
     <div class="modal-footer">
       <button class="btn btn-secondary" data-close="modal-reschedule">Abbrechen</button>
@@ -623,9 +650,15 @@ function formatDateTime(val) {
 }
 function openModal(id) { const el = document.getElementById(id); if (el) el.classList.add('open'); }
 function closeModal(id) { const el = document.getElementById(id); if (el) el.classList.remove('open'); }
+function escapeHTML(str) { return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;'); }
 
 // --- STORAGE ---
-const KEYS = { citizens: 'bw_citizens', appt_harrison: 'bw_appt_harrison', appt_schulz: 'bw_appt_schulz', arch_harrison: 'bw_arch_harrison', arch_schulz: 'bw_arch_schulz' };
+const KEYS = { 
+    citizens: 'bw_citizens', 
+    businesses: 'bw_businesses',
+    appointments: 'bw_appointments', 
+    arch_appointments: 'bw_arch_appointments' 
+};
 function load(key) { try { return JSON.parse(localStorage.getItem(key)) || []; } catch { return []; } }
 function save(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
 
@@ -646,7 +679,9 @@ document.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('c
 document.querySelectorAll('.modal-overlay').forEach(overlay => overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(overlay.id); }));
 document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open')); });
 
-// --- BÜRGERVERZEICHNIS ---
+// ==========================================
+// 1. BÜRGERVERZEICHNIS
+// ==========================================
 let citizens = load(KEYS.citizens);
 
 function renderCitizens() {
@@ -655,22 +690,20 @@ function renderCitizens() {
   const searchTerm = document.getElementById('search-citizen').value.toLowerCase();
   grid.innerHTML = '';
   
-  // Filter basierend auf Suche
   const filteredCitizens = citizens.filter(c => c.name.toLowerCase().includes(searchTerm));
 
   if (filteredCitizens.length === 0) {
-    empty.style.display = 'block';
-    return;
+    empty.style.display = 'block'; return;
   }
   empty.style.display = 'none';
 
   filteredCitizens.forEach(c => {
     const card = document.createElement('div');
-    card.className = 'citizen-card paper';
+    card.className = 'data-card paper';
     card.innerHTML = `
       <button class="card-edit" title="Bearbeiten">✎</button>
       <button class="card-delete" title="Löschen">&times;</button>
-      <div class="card-name">${escapeHTML(c.name)}</div>
+      <div class="card-title">${escapeHTML(c.name)}</div>
       <div class="card-field"><span class="card-label">Alter:</span><span>${escapeHTML(String(c.age))}</span></div>
       <div class="card-field"><span class="card-label">Telegramm:</span><span>${escapeHTML(c.telegram || '—')}</span></div>
       <div class="card-field"><span class="card-label">Beruf:</span><span>${escapeHTML(c.job)}</span></div>
@@ -679,8 +712,7 @@ function renderCitizens() {
 
     card.querySelector('.card-delete').addEventListener('click', () => {
       citizens = citizens.filter(x => x.id !== c.id);
-      save(KEYS.citizens, citizens);
-      renderCitizens();
+      save(KEYS.citizens, citizens); renderCitizens();
     });
 
     card.querySelector('.card-edit').addEventListener('click', () => {
@@ -698,7 +730,6 @@ function renderCitizens() {
   });
 }
 
-// Suchfunktion Live-Update
 document.getElementById('search-citizen').addEventListener('input', renderCitizens);
 
 document.getElementById('btn-add-citizen').addEventListener('click', () => {
@@ -727,21 +758,100 @@ document.getElementById('btn-save-citizen').addEventListener('click', () => {
     citizens.push({ id: uid(), name, age: age || '—', telegram: telegram || '—', job: job || '—', home: home || '—' });
   }
 
-  save(KEYS.citizens, citizens);
-  renderCitizens();
-  closeModal('modal-citizen');
+  save(KEYS.citizens, citizens); renderCitizens(); closeModal('modal-citizen');
 });
 
-// --- TERMINE ---
-function renderAppointments(doctorKey) {
-  const apptKey = doctorKey === 'harrison' ? KEYS.appt_harrison : KEYS.appt_schulz;
-  const archKey = doctorKey === 'harrison' ? KEYS.arch_harrison : KEYS.arch_schulz;
-  const appts = load(apptKey);
-  const archive = load(archKey);
-  const list = document.getElementById(`list-${doctorKey}`);
-  const empty = document.getElementById(`empty-${doctorKey}`);
-  const archList = document.getElementById(`archive-list-${doctorKey}`);
-  const archEmpty = document.getElementById(`archive-empty-${doctorKey}`);
+
+// ==========================================
+// 2. GEWERBEVERZEICHNIS
+// ==========================================
+let businesses = load(KEYS.businesses);
+
+function renderBusinesses() {
+  const grid = document.getElementById('business-grid');
+  const empty = document.getElementById('business-empty');
+  const searchTerm = document.getElementById('search-business').value.toLowerCase();
+  grid.innerHTML = '';
+  
+  const filteredBusinesses = businesses.filter(b => b.name.toLowerCase().includes(searchTerm));
+
+  if (filteredBusinesses.length === 0) {
+    empty.style.display = 'block'; return;
+  }
+  empty.style.display = 'none';
+
+  filteredBusinesses.forEach(b => {
+    const card = document.createElement('div');
+    card.className = 'data-card paper';
+    card.innerHTML = `
+      <button class="card-edit" title="Bearbeiten">✎</button>
+      <button class="card-delete" title="Löschen">&times;</button>
+      <div class="card-title">${escapeHTML(b.name)}</div>
+      <div class="card-field"><span class="card-label">Inhaber:</span><span>${escapeHTML(b.owner)}</span></div>
+      <div class="card-field"><span class="card-label">Art:</span><span>${escapeHTML(b.type)}</span></div>
+      <div class="card-field"><span class="card-label">Anschrift:</span><span>${escapeHTML(b.address)}</span></div>
+    `;
+
+    card.querySelector('.card-delete').addEventListener('click', () => {
+      businesses = businesses.filter(x => x.id !== b.id);
+      save(KEYS.businesses, businesses); renderBusinesses();
+    });
+
+    card.querySelector('.card-edit').addEventListener('click', () => {
+      document.getElementById('modal-business-title').textContent = 'Gewerbe bearbeiten';
+      document.getElementById('btn-save-business').textContent = 'Speichern';
+      document.getElementById('b-edit-id').value = b.id;
+      document.getElementById('b-name').value = b.name;
+      document.getElementById('b-owner').value = b.owner === '—' ? '' : b.owner;
+      document.getElementById('b-address').value = b.address === '—' ? '' : b.address;
+      document.getElementById('b-type').value = b.type === '—' ? '' : b.type;
+      openModal('modal-business');
+    });
+    grid.appendChild(card);
+  });
+}
+
+document.getElementById('search-business').addEventListener('input', renderBusinesses);
+
+document.getElementById('btn-add-business').addEventListener('click', () => {
+  document.getElementById('modal-business-title').textContent = 'Neues Gewerbe';
+  document.getElementById('btn-save-business').textContent = 'Eintragen';
+  document.getElementById('b-edit-id').value = '';
+  ['b-name','b-owner','b-address','b-type'].forEach(id => document.getElementById(id).value = '');
+  openModal('modal-business');
+  setTimeout(() => document.getElementById('b-name').focus(), 300);
+});
+
+document.getElementById('btn-save-business').addEventListener('click', () => {
+  const name = document.getElementById('b-name').value.trim();
+  const owner = document.getElementById('b-owner').value.trim();
+  const address = document.getElementById('b-address').value.trim();
+  const type = document.getElementById('b-type').value.trim();
+  const editId = document.getElementById('b-edit-id').value;
+
+  if (!name) { document.getElementById('b-name').focus(); return; }
+
+  if (editId) {
+    const idx = businesses.findIndex(x => x.id === editId);
+    if (idx !== -1) businesses[idx] = { id: editId, name, owner: owner || '—', address: address || '—', type: type || '—' };
+  } else {
+    businesses.push({ id: uid(), name, owner: owner || '—', address: address || '—', type: type || '—' });
+  }
+
+  save(KEYS.businesses, businesses); renderBusinesses(); closeModal('modal-business');
+});
+
+
+// ==========================================
+// 3. TERMINKALENDER
+// ==========================================
+function renderAppointments() {
+  const appts = load(KEYS.appointments);
+  const archive = load(KEYS.arch_appointments);
+  const list = document.getElementById('list-appointments');
+  const empty = document.getElementById('empty-appointments');
+  const archList = document.getElementById('archive-list-appts');
+  const archEmpty = document.getElementById('archive-empty-appts');
 
   list.innerHTML = '';
   if (appts.length === 0) empty.style.display = 'block';
@@ -762,26 +872,41 @@ function renderAppointments(doctorKey) {
           <button class="btn btn-danger btn-delete-appt">&times;</button>
         </div>
       `;
+      
+      // Erledigt
       item.querySelector('.btn-done').addEventListener('click', () => {
-        const current = load(apptKey); const arch = load(archKey);
+        const current = load(KEYS.appointments); 
+        const arch = load(KEYS.arch_appointments);
         const idx = current.findIndex(x => x.id === a.id);
         if (idx !== -1) {
-          const [done] = current.splice(idx, 1); done.archivedAt = new Date().toISOString();
-          arch.push(done); save(apptKey, current); save(archKey, arch); renderAppointments(doctorKey);
+          const [done] = current.splice(idx, 1); 
+          done.archivedAt = new Date().toISOString();
+          arch.push(done); 
+          save(KEYS.appointments, current); 
+          save(KEYS.arch_appointments, arch); 
+          renderAppointments();
         }
       });
+      
+      // Verschieben
       item.querySelector('.btn-reschedule').addEventListener('click', () => {
-        document.getElementById('r-doctor').value = doctorKey; document.getElementById('r-id').value = a.id;
-        document.getElementById('r-location').value = ''; document.getElementById('r-datetime').value = '';
+        document.getElementById('r-id').value = a.id;
+        document.getElementById('r-location').value = ''; 
+        document.getElementById('r-datetime').value = '';
         openModal('modal-reschedule');
       });
+      
+      // Löschen
       item.querySelector('.btn-delete-appt').addEventListener('click', () => {
-        save(apptKey, load(apptKey).filter(x => x.id !== a.id)); renderAppointments(doctorKey);
+        save(KEYS.appointments, load(KEYS.appointments).filter(x => x.id !== a.id)); 
+        renderAppointments();
       });
+      
       list.appendChild(item);
     });
   }
 
+  // Archiv
   archList.innerHTML = '';
   if (archive.length === 0) archEmpty.style.display = 'block';
   else {
@@ -795,58 +920,56 @@ function renderAppointments(doctorKey) {
   }
 }
 
-document.getElementById('btn-add-harrison').addEventListener('click', () => addAppointment('harrison'));
-document.getElementById('btn-add-schulz').addEventListener('click', () => addAppointment('schulz'));
+document.getElementById('btn-add-appt').addEventListener('click', () => {
+  const location = document.getElementById('appt-location').value;
+  const datetime = document.getElementById('appt-datetime').value;
+  const note = document.getElementById('appt-note').value.trim();
 
-function addAppointment(doctorKey) {
-  const prefix = doctorKey === 'harrison' ? 'h' : 's';
-  const location = document.getElementById(`${prefix}-location`).value;
-  const datetime = document.getElementById(`${prefix}-datetime`).value;
-  const note = document.getElementById(`${prefix}-note`).value.trim();
+  if (!location || !datetime) { 
+      document.getElementById(!location ? 'appt-location' : 'appt-datetime').focus(); 
+      return; 
+  }
 
-  if (!location || !datetime) { document.getElementById(!location ? `${prefix}-location` : `${prefix}-datetime`).focus(); return; }
-
-  const apptKey = doctorKey === 'harrison' ? KEYS.appt_harrison : KEYS.appt_schulz;
-  const appts = load(apptKey);
+  const appts = load(KEYS.appointments);
   appts.push({ id: uid(), location, datetime, note });
-  save(apptKey, appts);
+  save(KEYS.appointments, appts);
 
-  document.getElementById(`${prefix}-location`).value = '';
-  document.getElementById(`${prefix}-datetime`).value = '';
-  document.getElementById(`${prefix}-note`).value = '';
-  renderAppointments(doctorKey);
-}
+  document.getElementById('appt-location').value = '';
+  document.getElementById('appt-datetime').value = '';
+  document.getElementById('appt-note').value = '';
+  renderAppointments();
+});
 
 document.getElementById('btn-confirm-reschedule').addEventListener('click', () => {
-  const doctorKey = document.getElementById('r-doctor').value;
   const id = document.getElementById('r-id').value;
   const location = document.getElementById('r-location').value;
   const datetime = document.getElementById('r-datetime').value;
 
   if (!location || !datetime) return;
 
-  const apptKey = doctorKey === 'harrison' ? KEYS.appt_harrison : KEYS.appt_schulz;
-  const appts = load(apptKey);
+  const appts = load(KEYS.appointments);
   const appt = appts.find(x => x.id === id);
-  if (appt) { appt.location = location; appt.datetime = datetime; save(apptKey, appts); renderAppointments(doctorKey); }
+  if (appt) { 
+      appt.location = location; 
+      appt.datetime = datetime; 
+      save(KEYS.appointments, appts); 
+      renderAppointments(); 
+  }
   closeModal('modal-reschedule');
 });
 
-['harrison', 'schulz'].forEach(key => {
-  const btn = document.getElementById(`btn-archive-${key}`);
-  const section = document.getElementById(`archive-section-${key}`);
-  btn.addEventListener('click', () => {
-    const isOpen = section.style.display !== 'none';
-    section.style.display = isOpen ? 'none' : 'block';
-    btn.textContent = isOpen ? 'Archiv einsehen' : 'Archiv schließen';
-  });
+const archiveBtn = document.getElementById('btn-archive-appts');
+const archiveSection = document.getElementById('archive-section-appts');
+archiveBtn.addEventListener('click', () => {
+  const isOpen = archiveSection.style.display !== 'none';
+  archiveSection.style.display = isOpen ? 'none' : 'block';
+  archiveBtn.textContent = isOpen ? 'Archiv einsehen' : 'Archiv schließen';
 });
 
-function escapeHTML(str) { return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;'); }
-
+// Initiale Ausführung beim Laden der Seite
 renderCitizens();
-renderAppointments('harrison');
-renderAppointments('schulz');
+renderBusinesses();
+renderAppointments();
 </script>
 </body>
 </html>
