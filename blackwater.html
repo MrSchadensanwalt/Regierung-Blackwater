@@ -1,392 +1,852 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bürgermeisteramt Blackwater - 1899</title>
-    <style>
-        /* FARBEN UND DESIGN HIER ÄNDERN */
-        :root {
-            --bg-color: #eaddcf; /* Warmes Pergament-Beige */
-            --text-color: #2b1b17; /* Dunkles Braun-Schwarz für Schrift */
-            --accent-color: #5c3a21; /* Edles Holz-Braun */
-            --card-bg: #f4eee6; /* Hellere Karten für Einträge */
-            --border-color: #8b6b52; /* Rahmenfarbe */
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Blackwater — Stadtregister</title>
 
-        body {
-            font-family: "Times New Roman", Times, serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
 
-        header {
-            background-color: var(--accent-color);
-            color: #fff;
-            padding: 20px;
-            text-align: center;
-            border-bottom: 4px solid var(--border-color);
-        }
+<style>
+/* ============================================================
+   CSS CUSTOM PROPERTIES — Western / Blackwater Palette
+   ============================================================ */
+:root {
+  --paper:       #f5ead6;
+  --paper-dark:  #e8d5b0;
+  --paper-light: #faf3e4;
+  --ink:         #1c1208;
+  --ink-soft:    #3b2d14;
+  --brown-deep:  #3d1f08;
+  --brown-mid:   #6b3d1e;
+  --brown-warm:  #8c5230;
+  --sepia:       #a0723a;
+  --sepia-light: #c49a5e;
+  --cream:       #f9f2e3;
+  --border:      #b08050;
+  --border-soft: #d4a96a;
+  --shadow:      rgba(30, 15, 2, 0.18);
+  --shadow-deep: rgba(30, 15, 2, 0.35);
+  --overlay:     rgba(20, 10, 2, 0.55);
 
-        /* TEXT HIER ÄNDERN: Navigation-Styling */
-        nav {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            background-color: #3e2723;
-            padding: 10px;
-        }
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'Crimson Text', Georgia, serif;
 
-        nav button {
-            background-color: var(--accent-color);
-            color: white;
-            border: 2px solid var(--border-color);
-            padding: 10px 20px;
-            font-size: 16px;
-            font-family: inherit;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+  --radius: 3px;
+  --transition: 0.25s ease;
+}
 
-        nav button:hover {
-            background-color: var(--border-color);
-        }
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 
-        .container {
-            max-width: 1000px;
-            margin: 30px auto;
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.4);
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
+body {
+  background-color: var(--brown-deep);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.65;
+  min-height: 100vh;
+}
 
-        .section {
-            display: none; /* Versteckt die Bereiche standardmäßig */
-        }
+/* Dezentes Rauschen für den Retro-Look */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.45;
+}
 
-        .section.active {
-            display: block; /* Zeigt den aktiven Bereich */
-        }
+/* ============================================================
+   HEADER
+   ============================================================ */
+header {
+  background-color: var(--brown-deep);
+  border-bottom: 3px solid var(--sepia);
+  padding: 28px 0 16px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
 
-        /* Formular Styling */
-        form {
-            display: grid;
-            gap: 15px;
-            margin-bottom: 30px;
-            padding: 20px;
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-        }
+header::after {
+  content: '';
+  display: block;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--sepia-light), transparent);
+  margin-top: 12px;
+}
 
-        input, textarea, select {
-            width: 100%;
-            padding: 8px;
-            font-family: inherit;
-            border: 1px solid var(--border-color);
-            background-color: #fff;
-            box-sizing: border-box;
-        }
+.header-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
 
-        button.submit-btn {
-            background-color: var(--accent-color);
-            color: white;
-            padding: 10px;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            font-family: inherit;
-        }
+.header-star {
+  font-size: 22px;
+  color: var(--sepia-light);
+  letter-spacing: 14px;
+  display: block;
+  margin-bottom: 6px;
+  opacity: 0.75;
+}
 
-        button.submit-btn:hover {
-            background-color: var(--text-color);
-        }
+header h1 {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 6vw, 52px);
+  font-weight: 700;
+  color: var(--paper);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 2px 3px 8px rgba(0,0,0,0.5);
+  line-height: 1.1;
+}
 
-        /* Styling für die Listen und Karten */
-        .list-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
+header h1 span {
+  display: block;
+  font-size: 0.38em;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: 0.22em;
+  color: var(--sepia-light);
+  margin-top: 4px;
+}
 
-        .card {
-            background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
-            padding: 15px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+nav {
+  background-color: var(--ink);
+  border-bottom: 2px solid var(--sepia);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
 
-        .card:hover {
-            background-color: #e8dbce;
-        }
+nav ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  max-width: 860px;
+  margin: 0 auto;
+  gap: 0;
+}
 
-        /* Kompakte Ansicht */
-        .card-summary {
-            display: flex;
-            justify-content: space-between;
-            font-weight: bold;
-            font-size: 18px;
-        }
+nav ul li { flex: 1 1 auto; }
 
-        /* Erweiterte Ansicht (standardmäßig versteckt) */
-        .card-details {
-            display: none;
-            margin-top: 15px;
-            border-top: 1px dashed var(--border-color);
-            padding-top: 15px;
-        }
+nav ul li a {
+  display: block;
+  padding: 14px 22px;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--paper-dark);
+  text-decoration: none;
+  border-right: 1px solid rgba(160, 114, 58, 0.25);
+  transition: background var(--transition), color var(--transition);
+  position: relative;
+}
 
-        .card.expanded .card-details {
-            display: block;
-        }
+nav ul li:last-child a { border-right: none; }
 
-        .details-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
+nav ul li a:hover,
+nav ul li a.active {
+  background-color: var(--brown-mid);
+  color: var(--paper-light);
+}
 
-        .beschreibung-box {
-            background-color: #fff;
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            font-style: italic;
-        }
+nav ul li a.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 30px; height: 2px;
+  background: var(--sepia-light);
+}
 
-        .home-image {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+/* ============================================================
+   MAIN CONTENT WRAPPER & VIEWS
+   ============================================================ */
+.page-wrapper {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+}
 
-        .home-image img {
-            max-width: 100%;
-            height: auto;
-            border: 4px solid var(--border-color);
-        }
-    </style>
+.view { display: none; animation: fadeIn 0.35s ease; }
+.view.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   SECTION HEADINGS & SEARCH
+   ============================================================ */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 28px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 4vw, 30px);
+  font-weight: 700;
+  color: var(--brown-deep);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.section-title small {
+  display: block;
+  font-size: 0.45em;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: 0.12em;
+  color: var(--sepia);
+  margin-top: 2px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.search-input {
+  background-color: var(--paper-light);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius);
+  padding: 8px 11px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--ink);
+  outline: none;
+  width: 200px;
+}
+
+.search-input:focus {
+  border-color: var(--sepia);
+  box-shadow: 0 0 0 3px rgba(160,114,58,0.15);
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+}
+
+.btn-primary {
+  background-color: var(--brown-deep);
+  color: var(--paper-light);
+  border: 1px solid var(--brown-mid);
+  box-shadow: 0 2px 6px var(--shadow);
+}
+.btn-primary:hover {
+  background-color: var(--brown-mid);
+  box-shadow: 0 4px 12px var(--shadow-deep);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--sepia);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover {
+  background-color: var(--paper-dark);
+  color: var(--brown-deep);
+}
+
+.btn-success { background-color: #4a6741; color: var(--paper-light); border: 1px solid #3a5234; font-size: 12px; padding: 6px 13px; }
+.btn-success:hover { background-color: #3a5234; }
+
+.btn-warning { background-color: var(--sepia); color: var(--paper-light); border: 1px solid var(--brown-warm); font-size: 12px; padding: 6px 13px; }
+.btn-warning:hover { background-color: var(--brown-warm); }
+
+.btn-danger { background-color: #7a2e1a; color: var(--paper-light); border: 1px solid #5c2010; font-size: 12px; padding: 6px 13px; }
+.btn-danger:hover { background-color: #5c2010; }
+
+/* ============================================================
+   PAPER BACKGROUND
+   ============================================================ */
+.paper {
+  background-color: var(--paper);
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 24px, rgba(160,114,58,0.07) 24px, rgba(160,114,58,0.07) 25px);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius);
+  box-shadow: 0 2px 10px var(--shadow), inset 0 0 40px rgba(200,170,100,0.08);
+}
+
+/* ============================================================
+   CITIZEN GRID
+   ============================================================ */
+.citizen-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 18px;
+}
+
+.citizen-card {
+  padding: 16px 15px 14px;
+  position: relative;
+  cursor: default;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.citizen-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px var(--shadow-deep);
+}
+
+.citizen-card::before {
+  content: ''; position: absolute; top: -1px; left: 10%; right: 10%; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--sepia-light), transparent); opacity: 0.6;
+}
+
+.citizen-card .card-name {
+  font-family: var(--font-display); font-size: 16px; font-weight: 700; color: var(--brown-deep);
+  border-bottom: 1px dashed var(--border-soft); padding-bottom: 6px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em;
+}
+
+.citizen-card .card-field { font-size: 14px; color: var(--ink-soft); display: flex; gap: 5px; margin-bottom: 3px; }
+.citizen-card .card-label { font-style: italic; color: var(--sepia); min-width: 55px; font-size: 13px; }
+
+.citizen-card .card-delete, .citizen-card .card-edit {
+  position: absolute; background: none; border: none; color: var(--sepia); opacity: 0; cursor: pointer;
+  font-size: 14px; line-height: 1; padding: 2px 4px; border-radius: 2px; transition: opacity var(--transition), color var(--transition);
+}
+.citizen-card .card-delete { top: 8px; right: 8px; font-size: 15px; }
+.citizen-card .card-edit   { top: 8px; right: 30px; font-size: 13px; }
+.citizen-card:hover .card-delete, .citizen-card:hover .card-edit { opacity: 0.6; }
+.citizen-card .card-delete:hover { opacity: 1 !important; color: #7a2e1a; }
+.citizen-card .card-edit:hover   { opacity: 1 !important; color: var(--brown-mid); }
+
+.empty-state { text-align: center; padding: 48px 20px; color: var(--sepia); font-style: italic; font-size: 18px; }
+.empty-state::before { content: '✦'; display: block; font-size: 28px; margin-bottom: 10px; opacity: 0.45; }
+
+/* ============================================================
+   FORMS & LISTS
+   ============================================================ */
+.appt-form { padding: 22px 24px; margin-bottom: 28px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 18px; }
+@media (max-width: 540px) { .form-grid { grid-template-columns: 1fr; } }
+
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-group.full { grid-column: 1 / -1; }
+.form-group label { font-family: var(--font-display); font-size: 11.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--sepia); }
+
+.form-group input, .form-group select, .form-group textarea {
+  background-color: var(--paper-light); border: 1px solid var(--border-soft); border-radius: var(--radius);
+  padding: 8px 11px; font-family: var(--font-body); font-size: 15px; color: var(--ink); outline: none; transition: border-color var(--transition), box-shadow var(--transition);
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--sepia); box-shadow: 0 0 0 3px rgba(160,114,58,0.15); }
+.form-group textarea { resize: vertical; min-height: 70px; }
+
+.form-actions { margin-top: 16px; display: flex; justify-content: flex-end; }
+
+.appt-list { display: flex; flex-direction: column; gap: 10px; }
+.appt-item { padding: 14px 18px; display: flex; align-items: flex-start; gap: 16px; border-left: 3px solid var(--sepia); transition: border-color var(--transition), box-shadow var(--transition); }
+.appt-item:hover { border-left-color: var(--brown-mid); box-shadow: 0 4px 14px var(--shadow); }
+
+.appt-info { flex: 1; min-width: 0; }
+.appt-location { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: var(--brown-deep); letter-spacing: 0.04em; }
+.appt-datetime { font-size: 13px; color: var(--sepia); font-style: italic; margin: 2px 0 5px; }
+.appt-note { font-size: 15px; color: var(--ink-soft); }
+.appt-actions { display: flex; gap: 7px; flex-shrink: 0; flex-wrap: wrap; align-items: flex-start; padding-top: 2px; }
+
+/* Archive */
+.archive-toggle { margin-top: 28px; text-align: center; }
+.archive-section { margin-top: 16px; padding: 18px 20px; background-color: var(--paper-dark); border: 1px dashed var(--border-soft); border-radius: var(--radius); }
+.archive-section h3 { font-family: var(--font-display); font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sepia); margin-bottom: 12px; }
+.archive-item { padding: 8px 0; border-bottom: 1px dotted var(--border-soft); font-size: 14px; color: var(--ink-soft); display: flex; gap: 12px; align-items: baseline; }
+.archive-item:last-child { border-bottom: none; }
+.archive-item strong { color: var(--brown-mid); font-family: var(--font-display); font-size: 13px; text-transform: uppercase; }
+
+/* ============================================================
+   MODALS
+   ============================================================ */
+.modal-overlay {
+  position: fixed; inset: 0; background: var(--overlay); z-index: 200; display: flex; align-items: center; justify-content: center;
+  padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal {
+  background-color: var(--paper); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px 28px 24px;
+  width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto; box-shadow: 0 16px 50px rgba(10,5,0,0.55);
+  transform: scale(0.93) translateY(12px); transition: transform 0.3s ease; position: relative;
+}
+.modal-overlay.open .modal { transform: scale(1) translateY(0); }
+.modal-header { margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border-soft); display: flex; justify-content: space-between; align-items: center; }
+.modal-title { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--brown-deep); text-transform: uppercase; letter-spacing: 0.07em; }
+.modal-close { background: none; border: none; font-size: 22px; color: var(--sepia); cursor: pointer; padding: 0 4px; line-height: 1; transition: color var(--transition); }
+.modal-close:hover { color: var(--brown-deep); }
+.modal-footer { margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px; }
+
+.ornament-divider { text-align: center; color: var(--border-soft); font-size: 13px; letter-spacing: 12px; margin: 20px 0; user-select: none; opacity: 0.7; }
+
+/* Scrollbars */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--brown-deep); }
+::-webkit-scrollbar-thumb { background: var(--sepia); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--sepia-light); }
+::selection { background: var(--sepia-light); color: var(--brown-deep); }
+</style>
 </head>
 <body>
 
-    <header>
-        <h1>Bürgermeisteramt Blackwater</h1>
-        <h3>Büro von Bürgermeister Dr. Josef Schultz</h3>
-    </header>
+<header>
+  <div class="header-inner">
+    <span class="header-star">✦ ✦ ✦</span>
+    <h1>Blackwater<span>Stadtregister &amp; Terminverwaltung</span></h1>
+  </div>
+</header>
 
-    <nav>
-        <button onclick="showSection('home')">Startseite</button>
-        <button onclick="showSection('buerger')">Bürgerverzeichnis</button>
-        <button onclick="showSection('gewerbe')">Gewerbeverzeichnis</button>
-        <button onclick="showSection('termine')">Terminkalender</button>
-    </nav>
+<nav aria-label="Hauptnavigation">
+  <ul>
+    <li><a href="#" class="nav-link active" data-view="citizens">Bürgerverzeichnis</a></li>
+    <li><a href="#" class="nav-link" data-view="doc-harrison">Terminplan Dr. Harrison</a></li>
+    <li><a href="#" class="nav-link" data-view="doc-schulz">Terminplan Dr. Schulz</a></li>
+  </ul>
+</nav>
 
-    <div class="container">
-        
-        <div id="home" class="section active">
-            <h2>Willkommen im Verwaltungsbüro</h2>
-            <div class="home-image">
-                <img src="bild_pfad.jpg" alt="Ansicht von Blackwater" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<p><i>[Hier wird Ihr Bild von Blackwater angezeigt, sobald Sie den Dateipfad im Code eingetragen haben]</i></p>');">
-            </div>
-            <p>Sehr geehrter Herr Bürgermeister Dr. Schultz, dies ist Ihr interaktives System zur Verwaltung der Stadt Blackwater im Jahre 1899. Bitte wählen Sie oben die gewünschte Akte aus.</p>
-        </div>
+<div class="page-wrapper">
 
-        <div id="buerger" class="section">
-            <h2>Bürgerverzeichnis</h2>
-            
-            <form id="form-buerger">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <input type="text" id="b-vorname" placeholder="Vorname" required>
-                    <input type="text" id="b-name" placeholder="Nachname" required>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <input type="number" id="b-alter" placeholder="Alter" required>
-                    <input type="text" id="b-taetigkeit" placeholder="Tätigkeit" required>
-                </div>
-                <textarea id="b-beschreibung" rows="4" placeholder="Beschreibung des Bürgers"></textarea>
-                <button type="submit" class="submit-btn">Bürger eintragen</button>
-            </form>
-
-            <div id="list-buerger" class="list-container">
-                </div>
-        </div>
-
-        <div id="gewerbe" class="section">
-            <h2>Gewerbeverzeichnis</h2>
-
-            <form id="form-gewerbe">
-                <input type="text" id="g-name" placeholder="Gewerbe Name" required>
-                <input type="text" id="g-inhaber" placeholder="Gewerbe Inhaber" required>
-                <input type="text" id="g-art" placeholder="Art des Gewerbes" required>
-                <input type="text" id="g-anschrift" placeholder="Anschrift" required>
-                <textarea id="g-beschreibung" rows="4" placeholder="Beschreibung des Gewerbes"></textarea>
-                <button type="submit" class="submit-btn">Gewerbe eintragen</button>
-            </form>
-
-            <div id="list-gewerbe" class="list-container">
-                </div>
-        </div>
-
-        <div id="termine" class="section">
-            <h2>Terminkalender 1899</h2>
-
-            <form id="form-termine">
-                <input type="text" id="t-ueberschrift" placeholder="Überschrift / Termin-Titel" required>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <input type="date" id="t-datum" required> 
-                    <input type="time" id="t-uhrzeit" required>
-                </div>
-
-                <select id="t-stadt" required>
-                    <option value="" disabled selected>Stadt auswählen...</option>
-                    <option value="Saint Denis">Saint Denis</option>
-                    <option value="Blackwater">Blackwater</option>
-                    <option value="Rhodes">Rhodes</option>
-                    <option value="Valentine">Valentine</option>
-                    <option value="Strawberry">Strawberry</option>
-                    <option value="Van Horn">Van Horn</option>
-                    <option value="Annesburg">Annesburg</option>
-                    <option value="Armadillo">Armadillo</option>
-                    <option value="Tumbleweed">Tumbleweed</option>
-                </select>
-
-                <textarea id="t-notiz" rows="4" placeholder="Notiz / Was ist an diesem Tag?"></textarea>
-                <button type="submit" class="submit-btn">Termin eintragen</button>
-            </form>
-
-            <div id="list-termine" class="list-container">
-                </div>
-        </div>
-
+  <section id="view-citizens" class="view active" aria-label="Bürgerverzeichnis">
+    <div class="section-header">
+      <h2 class="section-title">
+        Bürgerverzeichnis
+        <small>Einwohner von Blackwater</small>
+      </h2>
+      <div class="header-actions">
+        <input type="text" id="search-citizen" class="search-input" placeholder="Nach Namen suchen..." aria-label="Bürger suchen">
+        <button class="btn btn-primary" id="btn-add-citizen"><span>&#43;</span> Neuer Bürger</button>
+      </div>
     </div>
+    <div class="citizen-grid" id="citizen-grid"></div>
+    <div class="empty-state" id="citizen-empty" style="display:none">Das Verzeichnis ist noch leer.</div>
+  </section>
 
-    <script>
-        // Funktion zum Wechseln der Seiten (Tabs)
-        function showSection(sectionId) {
-            const sections = document.querySelectorAll('.section');
-            sections.forEach(sec => sec.classList.remove('active'));
-            document.getElementById(sectionId).classList.add('active');
+  <section id="view-doc-harrison" class="view" aria-label="Terminplan Dr. Harrison">
+    <div class="section-header">
+      <h2 class="section-title">Terminplan <small>Doktor Harrison</small></h2>
+    </div>
+    <div class="paper appt-form">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="h-location">Ort</label>
+          <select id="h-location">
+            <option value="">— Ort wählen —</option>
+            <option>Strawberry</option><option>Armadillo</option><option>Tumbleweed</option>
+            <option>Valentine</option><option>Annesburg</option><option>Van Horn</option>
+            <option>Rhodes</option><option>Saint Denis</option><option>Blackwater</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="h-datetime">Datum &amp; Uhrzeit</label>
+          <input type="datetime-local" id="h-datetime" />
+        </div>
+        <div class="form-group full">
+          <label for="h-note">Notiz</label>
+          <textarea id="h-note" placeholder="Kurze Beschreibung des Termins …"></textarea>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" id="btn-add-harrison"><span>&#43;</span> Termin hinzufügen</button>
+      </div>
+    </div>
+    <div class="ornament-divider">✦ ✦ ✦</div>
+    <div class="appt-list" id="list-harrison"></div>
+    <div class="empty-state" id="empty-harrison" style="display:none">Keine Termine vorhanden.</div>
+    
+    <div class="archive-toggle">
+      <button class="btn btn-secondary" id="btn-archive-harrison">Archiv einsehen</button>
+    </div>
+    <div class="archive-section" id="archive-section-harrison" style="display:none">
+      <h3>&#x2713; Erledigte Termine</h3>
+      <div id="archive-list-harrison"></div>
+      <div id="archive-empty-harrison" style="display:none; font-style:italic; font-size:14px; color:var(--sepia); padding:8px 0">Archiv ist leer.</div>
+    </div>
+  </section>
+
+  <section id="view-doc-schulz" class="view" aria-label="Terminplan Dr. Schulz">
+    <div class="section-header">
+      <h2 class="section-title">Terminplan <small>Doktor Schulz</small></h2>
+    </div>
+    <div class="paper appt-form">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="s-location">Ort</label>
+          <select id="s-location">
+            <option value="">— Ort wählen —</option>
+            <option>Strawberry</option><option>Armadillo</option><option>Tumbleweed</option>
+            <option>Valentine</option><option>Annesburg</option><option>Van Horn</option>
+            <option>Rhodes</option><option>Saint Denis</option><option>Blackwater</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="s-datetime">Datum &amp; Uhrzeit</label>
+          <input type="datetime-local" id="s-datetime" />
+        </div>
+        <div class="form-group full">
+          <label for="s-note">Notiz</label>
+          <textarea id="s-note" placeholder="Kurze Beschreibung des Termins …"></textarea>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" id="btn-add-schulz"><span>&#43;</span> Termin hinzufügen</button>
+      </div>
+    </div>
+    <div class="ornament-divider">✦ ✦ ✦</div>
+    <div class="appt-list" id="list-schulz"></div>
+    <div class="empty-state" id="empty-schulz" style="display:none">Keine Termine vorhanden.</div>
+
+    <div class="archive-toggle">
+      <button class="btn btn-secondary" id="btn-archive-schulz">Archiv einsehen</button>
+    </div>
+    <div class="archive-section" id="archive-section-schulz" style="display:none">
+      <h3>&#x2713; Erledigte Termine</h3>
+      <div id="archive-list-schulz"></div>
+      <div id="archive-empty-schulz" style="display:none; font-style:italic; font-size:14px; color:var(--sepia); padding:8px 0">Archiv ist leer.</div>
+    </div>
+  </section>
+</div>
+
+<div class="modal-overlay" id="modal-citizen" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-citizen-title">Neuer Bürger</span>
+      <button class="modal-close" data-close="modal-citizen">&times;</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group full">
+        <label for="c-name">Name</label>
+        <input type="text" id="c-name" placeholder="Vor- und Nachname" />
+      </div>
+      <div class="form-group">
+        <label for="c-age">Alter</label>
+        <input type="number" id="c-age" placeholder="z.B. 34" min="0" max="120" />
+      </div>
+      <div class="form-group">
+        <label for="c-telegram">Telegrammnummer</label>
+        <input type="text" id="c-telegram" placeholder="z.B. #4821" />
+      </div>
+      <div class="form-group">
+        <label for="c-job">Beruf</label>
+        <input type="text" id="c-job" placeholder="z.B. Schmied" />
+      </div>
+      <div class="form-group">
+        <label for="c-home">Wohnort</label>
+        <input type="text" id="c-home" placeholder="z.B. Blackwater" />
+      </div>
+    </div>
+    <input type="hidden" id="c-edit-id" value="" />
+    <div class="modal-footer">
+      <button class="btn btn-secondary" data-close="modal-citizen">Abbrechen</button>
+      <button class="btn btn-primary" id="btn-save-citizen">Eintragen</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-reschedule" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-reschedule-title">Termin verschieben</span>
+      <button class="modal-close" data-close="modal-reschedule">&times;</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="r-location">Neuer Ort</label>
+        <select id="r-location">
+          <option value="">— Ort wählen —</option>
+          <option>Strawberry</option><option>Armadillo</option><option>Tumbleweed</option>
+          <option>Valentine</option><option>Annesburg</option><option>Van Horn</option>
+          <option>Rhodes</option><option>Saint Denis</option><option>Blackwater</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="r-datetime">Neues Datum &amp; Uhrzeit</label>
+        <input type="datetime-local" id="r-datetime" />
+      </div>
+    </div>
+    <input type="hidden" id="r-doctor" />
+    <input type="hidden" id="r-id" />
+    <div class="modal-footer">
+      <button class="btn btn-secondary" data-close="modal-reschedule">Abbrechen</button>
+      <button class="btn btn-primary" id="btn-confirm-reschedule">Bestätigen</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// --- UTILITY ---
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+function formatDateTime(val) {
+  if (!val) return '—';
+  const d = new Date(val);
+  return d.toLocaleString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) + ' Uhr';
+}
+function openModal(id) { const el = document.getElementById(id); if (el) el.classList.add('open'); }
+function closeModal(id) { const el = document.getElementById(id); if (el) el.classList.remove('open'); }
+
+// --- STORAGE ---
+const KEYS = { citizens: 'bw_citizens', appt_harrison: 'bw_appt_harrison', appt_schulz: 'bw_appt_schulz', arch_harrison: 'bw_arch_harrison', arch_schulz: 'bw_arch_schulz' };
+function load(key) { try { return JSON.parse(localStorage.getItem(key)) || []; } catch { return []; } }
+function save(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+
+// --- NAVIGATION ---
+const navLinks = document.querySelectorAll('.nav-link');
+const views = document.querySelectorAll('.view');
+navLinks.forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    navLinks.forEach(l => l.classList.remove('active'));
+    link.classList.add('active');
+    views.forEach(v => { v.classList.remove('active'); if (v.id === 'view-' + link.dataset.view) v.classList.add('active'); });
+  });
+});
+
+// --- MODAL EVENTS ---
+document.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', () => closeModal(btn.dataset.close)));
+document.querySelectorAll('.modal-overlay').forEach(overlay => overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(overlay.id); }));
+document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open')); });
+
+// --- BÜRGERVERZEICHNIS ---
+let citizens = load(KEYS.citizens);
+
+function renderCitizens() {
+  const grid = document.getElementById('citizen-grid');
+  const empty = document.getElementById('citizen-empty');
+  const searchTerm = document.getElementById('search-citizen').value.toLowerCase();
+  grid.innerHTML = '';
+  
+  // Filter basierend auf Suche
+  const filteredCitizens = citizens.filter(c => c.name.toLowerCase().includes(searchTerm));
+
+  if (filteredCitizens.length === 0) {
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  filteredCitizens.forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'citizen-card paper';
+    card.innerHTML = `
+      <button class="card-edit" title="Bearbeiten">✎</button>
+      <button class="card-delete" title="Löschen">&times;</button>
+      <div class="card-name">${escapeHTML(c.name)}</div>
+      <div class="card-field"><span class="card-label">Alter:</span><span>${escapeHTML(String(c.age))}</span></div>
+      <div class="card-field"><span class="card-label">Telegramm:</span><span>${escapeHTML(c.telegram || '—')}</span></div>
+      <div class="card-field"><span class="card-label">Beruf:</span><span>${escapeHTML(c.job)}</span></div>
+      <div class="card-field"><span class="card-label">Wohnort:</span><span>${escapeHTML(c.home)}</span></div>
+    `;
+
+    card.querySelector('.card-delete').addEventListener('click', () => {
+      citizens = citizens.filter(x => x.id !== c.id);
+      save(KEYS.citizens, citizens);
+      renderCitizens();
+    });
+
+    card.querySelector('.card-edit').addEventListener('click', () => {
+      document.getElementById('modal-citizen-title').textContent = 'Bürger bearbeiten';
+      document.getElementById('btn-save-citizen').textContent = 'Speichern';
+      document.getElementById('c-edit-id').value = c.id;
+      document.getElementById('c-name').value = c.name;
+      document.getElementById('c-age').value = c.age === '—' ? '' : c.age;
+      document.getElementById('c-telegram').value = c.telegram || '';
+      document.getElementById('c-job').value = c.job === '—' ? '' : c.job;
+      document.getElementById('c-home').value = c.home === '—' ? '' : c.home;
+      openModal('modal-citizen');
+    });
+    grid.appendChild(card);
+  });
+}
+
+// Suchfunktion Live-Update
+document.getElementById('search-citizen').addEventListener('input', renderCitizens);
+
+document.getElementById('btn-add-citizen').addEventListener('click', () => {
+  document.getElementById('modal-citizen-title').textContent = 'Neuer Bürger';
+  document.getElementById('btn-save-citizen').textContent = 'Eintragen';
+  document.getElementById('c-edit-id').value = '';
+  ['c-name','c-age','c-telegram','c-job','c-home'].forEach(id => document.getElementById(id).value = '');
+  openModal('modal-citizen');
+  setTimeout(() => document.getElementById('c-name').focus(), 300);
+});
+
+document.getElementById('btn-save-citizen').addEventListener('click', () => {
+  const name = document.getElementById('c-name').value.trim();
+  const age = document.getElementById('c-age').value.trim();
+  const telegram = document.getElementById('c-telegram').value.trim();
+  const job = document.getElementById('c-job').value.trim();
+  const home = document.getElementById('c-home').value.trim();
+  const editId = document.getElementById('c-edit-id').value;
+
+  if (!name) { document.getElementById('c-name').focus(); return; }
+
+  if (editId) {
+    const idx = citizens.findIndex(x => x.id === editId);
+    if (idx !== -1) citizens[idx] = { id: editId, name, age: age || '—', telegram: telegram || '—', job: job || '—', home: home || '—' };
+  } else {
+    citizens.push({ id: uid(), name, age: age || '—', telegram: telegram || '—', job: job || '—', home: home || '—' });
+  }
+
+  save(KEYS.citizens, citizens);
+  renderCitizens();
+  closeModal('modal-citizen');
+});
+
+// --- TERMINE ---
+function renderAppointments(doctorKey) {
+  const apptKey = doctorKey === 'harrison' ? KEYS.appt_harrison : KEYS.appt_schulz;
+  const archKey = doctorKey === 'harrison' ? KEYS.arch_harrison : KEYS.arch_schulz;
+  const appts = load(apptKey);
+  const archive = load(archKey);
+  const list = document.getElementById(`list-${doctorKey}`);
+  const empty = document.getElementById(`empty-${doctorKey}`);
+  const archList = document.getElementById(`archive-list-${doctorKey}`);
+  const archEmpty = document.getElementById(`archive-empty-${doctorKey}`);
+
+  list.innerHTML = '';
+  if (appts.length === 0) empty.style.display = 'block';
+  else {
+    empty.style.display = 'none';
+    appts.forEach(a => {
+      const item = document.createElement('div');
+      item.className = 'appt-item paper';
+      item.innerHTML = `
+        <div class="appt-info">
+          <div class="appt-location">${escapeHTML(a.location)}</div>
+          <div class="appt-datetime">${formatDateTime(a.datetime)}</div>
+          <div class="appt-note">${escapeHTML(a.note || '—')}</div>
+        </div>
+        <div class="appt-actions">
+          <button class="btn btn-success btn-done">&#10003; Erledigt</button>
+          <button class="btn btn-warning btn-reschedule">&#8635; Verschieben</button>
+          <button class="btn btn-danger btn-delete-appt">&times;</button>
+        </div>
+      `;
+      item.querySelector('.btn-done').addEventListener('click', () => {
+        const current = load(apptKey); const arch = load(archKey);
+        const idx = current.findIndex(x => x.id === a.id);
+        if (idx !== -1) {
+          const [done] = current.splice(idx, 1); done.archivedAt = new Date().toISOString();
+          arch.push(done); save(apptKey, current); save(archKey, arch); renderAppointments(doctorKey);
         }
+      });
+      item.querySelector('.btn-reschedule').addEventListener('click', () => {
+        document.getElementById('r-doctor').value = doctorKey; document.getElementById('r-id').value = a.id;
+        document.getElementById('r-location').value = ''; document.getElementById('r-datetime').value = '';
+        openModal('modal-reschedule');
+      });
+      item.querySelector('.btn-delete-appt').addEventListener('click', () => {
+        save(apptKey, load(apptKey).filter(x => x.id !== a.id)); renderAppointments(doctorKey);
+      });
+      list.appendChild(item);
+    });
+  }
 
-        // Funktion zum Ausklappen der Karten (Klick-Ereignis)
-        function toggleCard(element) {
-            element.classList.toggle('expanded');
-        }
+  archList.innerHTML = '';
+  if (archive.length === 0) archEmpty.style.display = 'block';
+  else {
+    archEmpty.style.display = 'none';
+    archive.slice().reverse().forEach(a => {
+      const item = document.createElement('div');
+      item.className = 'archive-item';
+      item.innerHTML = `<strong>${escapeHTML(a.location)}</strong><span>${formatDateTime(a.datetime)}</span><span>${escapeHTML(a.note || '')}</span>`;
+      archList.appendChild(item);
+    });
+  }
+}
 
-        // --- BÜRGER LOGIK ---
-        document.getElementById('form-buerger').addEventListener('submit', function(e) {
-            e.preventDefault(); // Verhindert das Neuladen der Seite
-            
-            const vorname = document.getElementById('b-vorname').value;
-            const nachname = document.getElementById('b-name').value;
-            const alter = document.getElementById('b-alter').value;
-            const taetigkeit = document.getElementById('b-taetigkeit').value;
-            const beschreibung = document.getElementById('b-beschreibung').value || "Keine Beschreibung vorhanden.";
+document.getElementById('btn-add-harrison').addEventListener('click', () => addAppointment('harrison'));
+document.getElementById('btn-add-schulz').addEventListener('click', () => addAppointment('schulz'));
 
-            const cardHTML = `
-                <div class="card" onclick="toggleCard(this)">
-                    <div class="card-summary">
-                        <span>${vorname} ${nachname}</span>
-                        <span>Alter: ${alter} | ${taetigkeit}</span>
-                    </div>
-                    <div class="card-details">
-                        <div class="details-grid">
-                            <div><strong>Vorname:</strong> ${vorname}</div>
-                            <div style="text-align: right;"><strong>Nachname:</strong> ${nachname}</div>
-                            <div><strong>Alter:</strong> ${alter}</div>
-                            <div style="text-align: right;"><strong>Tätigkeit:</strong> ${taetigkeit}</div>
-                        </div>
-                        <div class="beschreibung-box">
-                            <strong>Beschreibung:</strong><br>${beschreibung}
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('list-buerger').insertAdjacentHTML('afterbegin', cardHTML);
-            this.reset(); // Formular leeren
-        });
+function addAppointment(doctorKey) {
+  const prefix = doctorKey === 'harrison' ? 'h' : 's';
+  const location = document.getElementById(`${prefix}-location`).value;
+  const datetime = document.getElementById(`${prefix}-datetime`).value;
+  const note = document.getElementById(`${prefix}-note`).value.trim();
 
-        // --- GEWERBE LOGIK ---
-        document.getElementById('form-gewerbe').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('g-name').value;
-            const inhaber = document.getElementById('g-inhaber').value;
-            const art = document.getElementById('g-art').value;
-            const anschrift = document.getElementById('g-anschrift').value;
-            const beschreibung = document.getElementById('g-beschreibung').value || "Keine Beschreibung vorhanden.";
+  if (!location || !datetime) { document.getElementById(!location ? `${prefix}-location` : `${prefix}-datetime`).focus(); return; }
 
-            const cardHTML = `
-                <div class="card" onclick="toggleCard(this)">
-                    <div class="card-summary">
-                        <span>${name}</span>
-                        <span>${art}</span>
-                    </div>
-                    <div class="card-details">
-                        <div class="details-grid">
-                            <div><strong>Gewerbe:</strong> ${name}</div>
-                            <div style="text-align: right;"><strong>Inhaber:</strong> ${inhaber}</div>
-                            <div><strong>Art:</strong> ${art}</div>
-                            <div style="text-align: right;"><strong>Anschrift:</strong> ${anschrift}</div>
-                        </div>
-                        <div class="beschreibung-box">
-                            <strong>Beschreibung:</strong><br>${beschreibung}
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('list-gewerbe').insertAdjacentHTML('afterbegin', cardHTML);
-            this.reset();
-        });
+  const apptKey = doctorKey === 'harrison' ? KEYS.appt_harrison : KEYS.appt_schulz;
+  const appts = load(apptKey);
+  appts.push({ id: uid(), location, datetime, note });
+  save(apptKey, appts);
 
-        // --- TERMIN LOGIK ---
-        document.getElementById('form-termine').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const ueberschrift = document.getElementById('t-ueberschrift').value;
-            let rawDatum = document.getElementById('t-datum').value; // z.B. 2023-10-25
-            const uhrzeit = document.getElementById('t-uhrzeit').value;
-            const stadt = document.getElementById('t-stadt').value;
-            const notiz = document.getElementById('t-notiz').value || "Keine Notiz vorhanden.";
+  document.getElementById(`${prefix}-location`).value = '';
+  document.getElementById(`${prefix}-datetime`).value = '';
+  document.getElementById(`${prefix}-note`).value = '';
+  renderAppointments(doctorKey);
+}
 
-            // Datum zwingend auf 1899 umschreiben für die Anzeige
-            let anzeigeDatum = "";
-            if(rawDatum) {
-                const parts = rawDatum.split('-');
-                if(parts.length === 3) {
-                    // Ignoriere das ausgewählte Jahr (parts[0]) und nutze 1899
-                    anzeigeDatum = `${parts[2]}.${parts[1]}.1899`;
-                }
-            }
+document.getElementById('btn-confirm-reschedule').addEventListener('click', () => {
+  const doctorKey = document.getElementById('r-doctor').value;
+  const id = document.getElementById('r-id').value;
+  const location = document.getElementById('r-location').value;
+  const datetime = document.getElementById('r-datetime').value;
 
-            const cardHTML = `
-                <div class="card" onclick="toggleCard(this)">
-                    <div class="card-summary">
-                        <span>${ueberschrift}</span>
-                        <span>${anzeigeDatum} - ${uhrzeit} Uhr</span>
-                    </div>
-                    <div class="card-details">
-                        <h3 style="margin-top: 0;">${ueberschrift}</h3>
-                        <div class="details-grid">
-                            <div><strong>Datum:</strong> ${anzeigeDatum}</div>
-                            <div style="text-align: right;"><strong>Uhrzeit:</strong> ${uhrzeit} Uhr</div>
-                            <div><strong>Ort:</strong> ${stadt}</div>
-                        </div>
-                        <div class="beschreibung-box">
-                            <strong>Notiz:</strong><br>${notiz}
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('list-termine').insertAdjacentHTML('afterbegin', cardHTML);
-            this.reset();
-        });
-    </script>
+  if (!location || !datetime) return;
+
+  const apptKey = doctorKey === 'harrison' ? KEYS.appt_harrison : KEYS.appt_schulz;
+  const appts = load(apptKey);
+  const appt = appts.find(x => x.id === id);
+  if (appt) { appt.location = location; appt.datetime = datetime; save(apptKey, appts); renderAppointments(doctorKey); }
+  closeModal('modal-reschedule');
+});
+
+['harrison', 'schulz'].forEach(key => {
+  const btn = document.getElementById(`btn-archive-${key}`);
+  const section = document.getElementById(`archive-section-${key}`);
+  btn.addEventListener('click', () => {
+    const isOpen = section.style.display !== 'none';
+    section.style.display = isOpen ? 'none' : 'block';
+    btn.textContent = isOpen ? 'Archiv einsehen' : 'Archiv schließen';
+  });
+});
+
+function escapeHTML(str) { return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;'); }
+
+renderCitizens();
+renderAppointments('harrison');
+renderAppointments('schulz');
+</script>
 </body>
 </html>
