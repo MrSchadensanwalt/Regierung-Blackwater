@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bürgermeisteramt Blackwater - 1899</title>
+    <style>
+        /* FARBEN UND DESIGN HIER ÄNDERN */
+        :root {
+            --bg-color: #eaddcf; /* Warmes Pergament-Beige */
+            --text-color: #2b1b17; /* Dunkles Braun-Schwarz für Schrift */
+            --accent-color: #5c3a21; /* Edles Holz-Braun */
+            --card-bg: #f4eee6; /* Hellere Karten für Einträge */
+            --border-color: #8b6b52; /* Rahmenfarbe */
+        }
+
+        body {
+            font-family: "Times New Roman", Times, serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: var(--accent-color);
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 4px solid var(--border-color);
+        }
+
+        /* TEXT HIER ÄNDERN: Navigation-Styling */
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            background-color: #3e2723;
+            padding: 10px;
+        }
+
+        nav button {
+            background-color: var(--accent-color);
+            color: white;
+            border: 2px solid var(--border-color);
+            padding: 10px 20px;
+            font-size: 16px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        nav button:hover {
+            background-color: var(--border-color);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.4);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .section {
+            display: none; /* Versteckt die Bereiche standardmäßig */
+        }
+
+        .section.active {
+            display: block; /* Zeigt den aktiven Bereich */
+        }
+
+        /* Formular Styling */
+        form {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            font-family: inherit;
+            border: 1px solid var(--border-color);
+            background-color: #fff;
+            box-sizing: border-box;
+        }
+
+        button.submit-btn {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        button.submit-btn:hover {
+            background-color: var(--text-color);
+        }
+
+        /* Styling für die Listen und Karten */
+        .list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            padding: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .card:hover {
+            background-color: #e8dbce;
+        }
+
+        /* Kompakte Ansicht */
+        .card-summary {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* Erweiterte Ansicht (standardmäßig versteckt) */
+        .card-details {
+            display: none;
+            margin-top: 15px;
+            border-top: 1px dashed var(--border-color);
+            padding-top: 15px;
+        }
+
+        .card.expanded .card-details {
+            display: block;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .beschreibung-box {
+            background-color: #fff;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            font-style: italic;
+        }
+
+        .home-image {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .home-image img {
+            max-width: 100%;
+            height: auto;
+            border: 4px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Bürgermeisteramt Blackwater</h1>
+        <h3>Büro von Bürgermeister Dr. Josef Schultz</h3>
+    </header>
+
+    <nav>
+        <button onclick="showSection('home')">Startseite</button>
+        <button onclick="showSection('buerger')">Bürgerverzeichnis</button>
+        <button onclick="showSection('gewerbe')">Gewerbeverzeichnis</button>
+        <button onclick="showSection('termine')">Terminkalender</button>
+    </nav>
+
+    <div class="container">
+        
+        <div id="home" class="section active">
+            <h2>Willkommen im Verwaltungsbüro</h2>
+            <div class="home-image">
+                <img src="bild_pfad.jpg" alt="Ansicht von Blackwater" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<p><i>[Hier wird Ihr Bild von Blackwater angezeigt, sobald Sie den Dateipfad im Code eingetragen haben]</i></p>');">
+            </div>
+            <p>Sehr geehrter Herr Bürgermeister Dr. Schultz, dies ist Ihr interaktives System zur Verwaltung der Stadt Blackwater im Jahre 1899. Bitte wählen Sie oben die gewünschte Akte aus.</p>
+        </div>
+
+        <div id="buerger" class="section">
+            <h2>Bürgerverzeichnis</h2>
+            
+            <form id="form-buerger">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <input type="text" id="b-vorname" placeholder="Vorname" required>
+                    <input type="text" id="b-name" placeholder="Nachname" required>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <input type="number" id="b-alter" placeholder="Alter" required>
+                    <input type="text" id="b-taetigkeit" placeholder="Tätigkeit" required>
+                </div>
+                <textarea id="b-beschreibung" rows="4" placeholder="Beschreibung des Bürgers"></textarea>
+                <button type="submit" class="submit-btn">Bürger eintragen</button>
+            </form>
+
+            <div id="list-buerger" class="list-container">
+                </div>
+        </div>
+
+        <div id="gewerbe" class="section">
+            <h2>Gewerbeverzeichnis</h2>
+
+            <form id="form-gewerbe">
+                <input type="text" id="g-name" placeholder="Gewerbe Name" required>
+                <input type="text" id="g-inhaber" placeholder="Gewerbe Inhaber" required>
+                <input type="text" id="g-art" placeholder="Art des Gewerbes" required>
+                <input type="text" id="g-anschrift" placeholder="Anschrift" required>
+                <textarea id="g-beschreibung" rows="4" placeholder="Beschreibung des Gewerbes"></textarea>
+                <button type="submit" class="submit-btn">Gewerbe eintragen</button>
+            </form>
+
+            <div id="list-gewerbe" class="list-container">
+                </div>
+        </div>
+
+        <div id="termine" class="section">
+            <h2>Terminkalender 1899</h2>
+
+            <form id="form-termine">
+                <input type="text" id="t-ueberschrift" placeholder="Überschrift / Termin-Titel" required>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <input type="date" id="t-datum" required> 
+                    <input type="time" id="t-uhrzeit" required>
+                </div>
+
+                <select id="t-stadt" required>
+                    <option value="" disabled selected>Stadt auswählen...</option>
+                    <option value="Saint Denis">Saint Denis</option>
+                    <option value="Blackwater">Blackwater</option>
+                    <option value="Rhodes">Rhodes</option>
+                    <option value="Valentine">Valentine</option>
+                    <option value="Strawberry">Strawberry</option>
+                    <option value="Van Horn">Van Horn</option>
+                    <option value="Annesburg">Annesburg</option>
+                    <option value="Armadillo">Armadillo</option>
+                    <option value="Tumbleweed">Tumbleweed</option>
+                </select>
+
+                <textarea id="t-notiz" rows="4" placeholder="Notiz / Was ist an diesem Tag?"></textarea>
+                <button type="submit" class="submit-btn">Termin eintragen</button>
+            </form>
+
+            <div id="list-termine" class="list-container">
+                </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Funktion zum Wechseln der Seiten (Tabs)
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(sec => sec.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        // Funktion zum Ausklappen der Karten (Klick-Ereignis)
+        function toggleCard(element) {
+            element.classList.toggle('expanded');
+        }
+
+        // --- BÜRGER LOGIK ---
+        document.getElementById('form-buerger').addEventListener('submit', function(e) {
+            e.preventDefault(); // Verhindert das Neuladen der Seite
+            
+            const vorname = document.getElementById('b-vorname').value;
+            const nachname = document.getElementById('b-name').value;
+            const alter = document.getElementById('b-alter').value;
+            const taetigkeit = document.getElementById('b-taetigkeit').value;
+            const beschreibung = document.getElementById('b-beschreibung').value || "Keine Beschreibung vorhanden.";
+
+            const cardHTML = `
+                <div class="card" onclick="toggleCard(this)">
+                    <div class="card-summary">
+                        <span>${vorname} ${nachname}</span>
+                        <span>Alter: ${alter} | ${taetigkeit}</span>
+                    </div>
+                    <div class="card-details">
+                        <div class="details-grid">
+                            <div><strong>Vorname:</strong> ${vorname}</div>
+                            <div style="text-align: right;"><strong>Nachname:</strong> ${nachname}</div>
+                            <div><strong>Alter:</strong> ${alter}</div>
+                            <div style="text-align: right;"><strong>Tätigkeit:</strong> ${taetigkeit}</div>
+                        </div>
+                        <div class="beschreibung-box">
+                            <strong>Beschreibung:</strong><br>${beschreibung}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('list-buerger').insertAdjacentHTML('afterbegin', cardHTML);
+            this.reset(); // Formular leeren
+        });
+
+        // --- GEWERBE LOGIK ---
+        document.getElementById('form-gewerbe').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('g-name').value;
+            const inhaber = document.getElementById('g-inhaber').value;
+            const art = document.getElementById('g-art').value;
+            const anschrift = document.getElementById('g-anschrift').value;
+            const beschreibung = document.getElementById('g-beschreibung').value || "Keine Beschreibung vorhanden.";
+
+            const cardHTML = `
+                <div class="card" onclick="toggleCard(this)">
+                    <div class="card-summary">
+                        <span>${name}</span>
+                        <span>${art}</span>
+                    </div>
+                    <div class="card-details">
+                        <div class="details-grid">
+                            <div><strong>Gewerbe:</strong> ${name}</div>
+                            <div style="text-align: right;"><strong>Inhaber:</strong> ${inhaber}</div>
+                            <div><strong>Art:</strong> ${art}</div>
+                            <div style="text-align: right;"><strong>Anschrift:</strong> ${anschrift}</div>
+                        </div>
+                        <div class="beschreibung-box">
+                            <strong>Beschreibung:</strong><br>${beschreibung}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('list-gewerbe').insertAdjacentHTML('afterbegin', cardHTML);
+            this.reset();
+        });
+
+        // --- TERMIN LOGIK ---
+        document.getElementById('form-termine').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const ueberschrift = document.getElementById('t-ueberschrift').value;
+            let rawDatum = document.getElementById('t-datum').value; // z.B. 2023-10-25
+            const uhrzeit = document.getElementById('t-uhrzeit').value;
+            const stadt = document.getElementById('t-stadt').value;
+            const notiz = document.getElementById('t-notiz').value || "Keine Notiz vorhanden.";
+
+            // Datum zwingend auf 1899 umschreiben für die Anzeige
+            let anzeigeDatum = "";
+            if(rawDatum) {
+                const parts = rawDatum.split('-');
+                if(parts.length === 3) {
+                    // Ignoriere das ausgewählte Jahr (parts[0]) und nutze 1899
+                    anzeigeDatum = `${parts[2]}.${parts[1]}.1899`;
+                }
+            }
+
+            const cardHTML = `
+                <div class="card" onclick="toggleCard(this)">
+                    <div class="card-summary">
+                        <span>${ueberschrift}</span>
+                        <span>${anzeigeDatum} - ${uhrzeit} Uhr</span>
+                    </div>
+                    <div class="card-details">
+                        <h3 style="margin-top: 0;">${ueberschrift}</h3>
+                        <div class="details-grid">
+                            <div><strong>Datum:</strong> ${anzeigeDatum}</div>
+                            <div style="text-align: right;"><strong>Uhrzeit:</strong> ${uhrzeit} Uhr</div>
+                            <div><strong>Ort:</strong> ${stadt}</div>
+                        </div>
+                        <div class="beschreibung-box">
+                            <strong>Notiz:</strong><br>${notiz}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('list-termine').insertAdjacentHTML('afterbegin', cardHTML);
+            this.reset();
+        });
+    </script>
+</body>
+</html>
