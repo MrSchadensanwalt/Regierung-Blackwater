@@ -382,13 +382,17 @@ nav ul li a.active::after {
 .appt-note { font-size: 15px; color: var(--ink-soft); }
 .appt-actions { display: flex; gap: 7px; flex-shrink: 0; flex-wrap: wrap; }
 
-/* Archive */
+/* Archive & System */
 .archive-toggle { margin-top: 28px; text-align: center; }
 .archive-section { margin-top: 16px; padding: 18px 20px; background-color: var(--paper-dark); border: 1px dashed var(--border-soft); border-radius: var(--radius); }
 .archive-section h3 { font-family: var(--font-display); font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sepia); margin-bottom: 12px; }
 .archive-item { padding: 8px 0; border-bottom: 1px dotted var(--border-soft); font-size: 14px; color: var(--ink-soft); display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
 .archive-item:last-child { border-bottom: none; }
 .archive-item strong { color: var(--brown-mid); font-family: var(--font-display); font-size: 13px; text-transform: uppercase; }
+
+.system-panel { text-align: center; padding: 40px 20px; }
+.system-panel p { margin-bottom: 25px; color: var(--ink-soft); }
+.system-actions { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
 
 /* ============================================================
    MODALS
@@ -447,6 +451,8 @@ nav ul li a.active::after {
   .modal { padding: 20px 15px; }
   .modal-footer { flex-direction: column; }
   .modal-footer .btn { width: 100%; margin-left: 0; }
+  .system-actions { flex-direction: column; align-items: center; }
+  .system-actions .btn { width: 100%; }
 }
 </style>
 </head>
@@ -464,6 +470,7 @@ nav ul li a.active::after {
     <li><a href="#" class="nav-link active" data-view="citizens">Bürgerverzeichnis</a></li>
     <li><a href="#" class="nav-link" data-view="appointments">Terminkalender</a></li>
     <li><a href="#" class="nav-link" data-view="businesses">Gewerbeverzeichnis</a></li>
+    <li><a href="#" class="nav-link" data-view="system">Aktenkoffer</a></li>
   </ul>
 </nav>
 
@@ -539,6 +546,24 @@ nav ul li a.active::after {
     </div>
     <div class="data-grid" id="business-grid"></div>
     <div class="empty-state" id="business-empty" style="display:none">Das Verzeichnis ist noch leer.</div>
+  </section>
+
+  <section id="view-system" class="view" aria-label="Aktenkoffer">
+    <div class="section-header">
+      <h2 class="section-title">
+        Aktenkoffer
+        <small>Daten sichern und übertragen</small>
+      </h2>
+    </div>
+    <div class="paper system-panel">
+      <p>Hier können Sie alle eingetragenen Bürger, Gewerbe und Termine speichern. <br>Laden Sie die Akten als Datei herunter, um sie z.B. an Kollegen zu schicken. Diese können die Datei hier dann importieren, um Ihren Stand abzurufen.</p>
+      
+      <div class="system-actions">
+        <button class="btn btn-primary" id="btn-export-data">⬇ Akten exportieren (Speichern)</button>
+        <button class="btn btn-warning" id="btn-import-trigger">⬆ Akten importieren (Laden)</button>
+        <input type="file" id="file-import" accept=".json" style="display:none;" />
+      </div>
+    </div>
   </section>
 
 </div>
@@ -711,8 +736,10 @@ function renderCitizens() {
     `;
 
     card.querySelector('.card-delete').addEventListener('click', () => {
-      citizens = citizens.filter(x => x.id !== c.id);
-      save(KEYS.citizens, citizens); renderCitizens();
+      if(confirm("Bürger wirklich löschen?")) {
+        citizens = citizens.filter(x => x.id !== c.id);
+        save(KEYS.citizens, citizens); renderCitizens();
+      }
     });
 
     card.querySelector('.card-edit').addEventListener('click', () => {
@@ -793,8 +820,10 @@ function renderBusinesses() {
     `;
 
     card.querySelector('.card-delete').addEventListener('click', () => {
-      businesses = businesses.filter(x => x.id !== b.id);
-      save(KEYS.businesses, businesses); renderBusinesses();
+      if(confirm("Gewerbe wirklich löschen?")) {
+        businesses = businesses.filter(x => x.id !== b.id);
+        save(KEYS.businesses, businesses); renderBusinesses();
+      }
     });
 
     card.querySelector('.card-edit').addEventListener('click', () => {
@@ -898,8 +927,10 @@ function renderAppointments() {
       
       // Löschen
       item.querySelector('.btn-delete-appt').addEventListener('click', () => {
-        save(KEYS.appointments, load(KEYS.appointments).filter(x => x.id !== a.id)); 
-        renderAppointments();
+        if(confirm("Termin wirklich löschen?")) {
+            save(KEYS.appointments, load(KEYS.appointments).filter(x => x.id !== a.id)); 
+            renderAppointments();
+        }
       });
       
       list.appendChild(item);
@@ -964,6 +995,69 @@ archiveBtn.addEventListener('click', () => {
   const isOpen = archiveSection.style.display !== 'none';
   archiveSection.style.display = isOpen ? 'none' : 'block';
   archiveBtn.textContent = isOpen ? 'Archiv einsehen' : 'Archiv schließen';
+});
+
+
+// ==========================================
+// 4. IMPORT / EXPORT (AKTENKOFFER)
+// ==========================================
+document.getElementById('btn-export-data').addEventListener('click', () => {
+    const dataToExport = {
+        citizens: load(KEYS.citizens),
+        businesses: load(KEYS.businesses),
+        appointments: load(KEYS.appointments),
+        arch_appointments: load(KEYS.arch_appointments)
+    };
+    
+    // JSON Datei erstellen
+    const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    
+    // Aktuelles Datum für den Dateinamen
+    const dateStr = new Date().toISOString().split('T')[0];
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `blackwater_akten_${dateStr}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+});
+
+document.getElementById('btn-import-trigger').addEventListener('click', () => {
+    document.getElementById('file-import').click();
+});
+
+document.getElementById('file-import').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        try {
+            const importedData = JSON.parse(event.target.result);
+            
+            // Wenn gültige Daten vorhanden sind, überschreibe den aktuellen Speicher
+            if(importedData.citizens) save(KEYS.citizens, importedData.citizens);
+            if(importedData.businesses) save(KEYS.businesses, importedData.businesses);
+            if(importedData.appointments) save(KEYS.appointments, importedData.appointments);
+            if(importedData.arch_appointments) save(KEYS.arch_appointments, importedData.arch_appointments);
+            
+            alert("Die Akten wurden erfolgreich importiert! Die Seite wird nun neu geladen.");
+            
+            // Lade die Seite neu, damit alle Listen aktualisiert werden
+            location.reload();
+            
+        } catch (error) {
+            alert("Fehler beim Importieren. Stellen Sie sicher, dass Sie die richtige .json Datei ausgewählt haben.");
+            console.error(error);
+        }
+        
+        // Input-Feld leeren, damit man dieselbe Datei nochmal auswählen könnte
+        e.target.value = '';
+    };
+    reader.readAsText(file);
 });
 
 // Initiale Ausführung beim Laden der Seite
